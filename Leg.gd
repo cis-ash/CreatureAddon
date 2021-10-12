@@ -1,29 +1,48 @@
 tool
 extends Node2D
 
+# variable that turns on/off in-editor testing
 var on = false
-export (bool) var debug_draw
+
+# target object
 export (NodePath) var foot_path
 onready var foot = get_node(foot_path)
 
+# root bone of leg
 export (NodePath) var hip_path
 onready var hip = get_node(hip_path)
 
+# array of leg bones
 export (Array, NodePath) var joint_paths
 var joints = []
+# calculated automatically based on offsets from each other
 var bone_lengths = []
+# sum of all bone lengths
 var total_length = 0.0
-export (Array, float) var height_fractions
+
+# no longer used array for placing knee joints
+#export (Array, float) var height_fractions
+
+# bias for joint bend directions
 export (Array, int, "Forward", "Middle", "Backward") var biases
+
+# variable to simulate 3d rotation along leg axis
+# 1.0 = facing right
+# -1.0 = facing left
 export (float) var facing
 
+# raycast that determines where the leg goes
 export (NodePath) var raycast_path
 onready var raycast = get_node(raycast_path)
 
+# joint that should remain parallel to the ground
 export (NodePath) var keep_flat_path
 onready var keep_flat = get_node(keep_flat_path)
 
+var touching_ground = false
 
+# builds bones when node is loaded
+# reload saved scene to rebuild after code change/ length alteration
 func _ready():
 	update_bones()
 	pass
@@ -32,54 +51,87 @@ func update_bones():
 	joints = []
 	bone_lengths = []
 	total_length = 0.0
+	
 	for path in joint_paths:
 		joints.append(get_node(path))
 		bone_lengths.append(get_node(path).position.length())
 		total_length += get_node(path).position.length()
 
+# toggles in editor processing on/off
+# if on - run joint placer
 func _process(delta):
 	if Input.is_action_just_pressed("ui_accept"):
 		on = !on
+	
 	if on:
 		place_joints()
 
 func place_joints():
 	var hip_pos = hip.global_position
 	var foot_pos = foot.global_position
-	raycast.cast_to = foot.position
+	
+	# cast ray to target
+	raycast.cast_to = raycast.to_local(foot.global_position)
 	raycast.force_raycast_update()
-	if raycast.is_colliding():
+	
+	
+	if raycast.is_colliding() and (raycast.get_collision_point() - hip_pos).length()<total_length:
+		# if ground within range 
+		# place foot on ground
 		foot_pos = raycast.get_collision_point()
+		
+		# rotate foot to be parallel to ground
 		keep_flat.rotation = raycast.get_collision_normal().angle()+TAU/4
+		
+		touching_ground = true
 	else:
+		# if no ground within range
+		# rotate foot to the midair angle
 		keep_flat.rotation = 0
+		
+		touching_ground = false
+	
+	# if foot further than should be possible
+	# assume it is as far as it can possibly be
 	if (hip_pos - foot_pos).length() > total_length:
 		foot_pos = hip_pos + total_length * (foot_pos-hip_pos).normalized()
-		pass
+	
+	# get vector perpendicular to leg axis
 	var normal = (foot_pos-hip_pos).normalized().rotated(TAU/4)
+	
+	# get distance from hip to foot
 	var total_v_length = (foot_pos-hip_pos).length()
+	
 	var v_length_so_far = 0.0
 	var h_offset_so_far = 0.0
 	
+	# run code on all joints
 	for i in range(joints.size()):
+		# length of current bone
 		var r_length = bone_lengths[i]
+		
+		# length of current bone projected onto leg axis
 		var v_length = total_v_length*(r_length/total_length)
+		
+		# distance from joint to leg axis
 		var h_offset = sqrt( max( (r_length*r_length) - (v_length*v_length), 0) )
+		
+		# offset joint relative to previous perpendicular to leg axis
 		h_offset_so_far += h_offset*(biases[i]-1)
+		
 		v_length_so_far += v_length
+		
+		# place joint along leg
 		joints[i].global_position = lerp(hip_pos, foot_pos, v_length_so_far/total_v_length)
+		# offset perpendicular to leg
 		joints[i].global_position += normal*h_offset_so_far*facing
 		pass
 	
-#	v_length_so_far = 0.0
-#	for i in range(joints.size()):
-#		var r_length = bone_lengths[i]
-#		var v_length = total_v_length*(r_length/total_length)
-#		v_length_so_far += v_length
-#		var adjust = lerp(0.0, -0.5*h_offset_so_far, v_length_so_far/total_v_length)
-#		joints[i].global_position += normal*adjust*facing
-#		pass
-#
+	
+	# known issues
+	# if sum of forward bones =/= sum of backward bones 
+	# foot horizontally offset
+	# previous attempts at fixing the issue stretch/compress bones (owie)
 	pass
 
 
