@@ -29,7 +29,7 @@ export (Array, int, "Forward", "Middle", "Backward") var biases
 # variable to simulate 3d rotation along leg axis
 # 1.0 = facing right
 # -1.0 = facing left
-export (float) var facing
+export (float, -1.0, 1.0) var facing
 
 # raycast that determines where the leg goes
 export (NodePath) var raycast_path
@@ -48,6 +48,11 @@ func _ready():
 	pass
 
 func update_bones():
+	raycast = get_node(raycast_path)
+	keep_flat = get_node(keep_flat_path)
+	foot = get_node(foot_path)
+	hip = get_node(hip_path)
+	
 	joints = []
 	bone_lengths = []
 	total_length = 0.0
@@ -62,6 +67,8 @@ func update_bones():
 func _process(delta):
 	if Input.is_action_just_pressed("ui_accept"):
 		on = !on
+		if on:
+			update_bones()
 	
 	if on:
 		place_joints()
@@ -74,6 +81,8 @@ func place_joints():
 	raycast.cast_to = raycast.to_local(foot.global_position)
 	raycast.force_raycast_update()
 	
+	
+	keep_flat.scale.x = facing
 	
 	if raycast.is_colliding() and (raycast.get_collision_point() - hip_pos).length()<total_length:
 		# if ground within range 
@@ -127,11 +136,6 @@ func place_joints():
 		joints[i].global_position += normal*h_offset_so_far*facing
 		pass
 	
-	
-	# known issues
-	# if sum of forward bones =/= sum of backward bones 
-	# foot horizontally offset
-	# previous attempts at fixing the issue stretch/compress bones (owie)
 	pass
 
 

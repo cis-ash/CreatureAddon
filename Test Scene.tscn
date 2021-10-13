@@ -1,21 +1,22 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Leg.gd" type="Script" id=1]
+[ext_resource path="res://Follower.gd" type="Script" id=2]
 [ext_resource path="res://StaticBody2D.gd" type="Script" id=4]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 136.16
-height = 100.0
+height = 150.0
 
 [node name="Test Scene" type="Node2D"]
 position = Vector2( -1.05945, 0 )
 
 [node name="FootController" type="Node2D" parent="."]
-position = Vector2( 293.123, 610.031 )
+position = Vector2( 240.266, 611.919 )
 rotation = -1.23177
 
 [node name="Leg" type="Node2D" parent="."]
-position = Vector2( 337.638, 86.9806 )
+position = Vector2( 241.363, -22.5086 )
 script = ExtResource( 1 )
 foot_path = NodePath("../FootController")
 hip_path = NodePath("Hip")
@@ -30,31 +31,34 @@ position = Vector2( 0.790192, -4.91817 )
 default_length = 109.0
 
 [node name="Knee" type="Bone2D" parent="Leg/Hip"]
-position = Vector2( -113.654, 89.3583 )
+position = Vector2( 101.456, 216.884 )
 default_length = 86.0
 
 [node name="Ankle" type="Bone2D" parent="Leg/Hip/Knee"]
-position = Vector2( 184.651, 205.22 )
+position = Vector2( -128.767, 270.84 )
 default_length = 41.0
 
 [node name="Toe" type="Bone2D" parent="Leg/Hip/Knee/Ankle"]
-position = Vector2( -92.4712, 72.7039 )
-rotation = 0.940303
+position = Vector2( 33.4682, 71.5452 )
+rotation = -0.95211
 
 [node name="BentToe" type="Bone2D" parent="Leg/Hip/Knee/Ankle/Toe"]
-position = Vector2( 62.7508, 8.3006 )
-rotation = -0.519433
+position = Vector2( 60, 0 )
+default_length = 1.0
 
 [node name="RayCast2D" type="RayCast2D" parent="Leg"]
 enabled = true
-cast_to = Vector2( -44.515, 523.05 )
+cast_to = Vector2( -1.09726, 634.427 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2( 298.264, 607.854 )
-rotation = 744.341
+rotation = 1546.13
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2( 67.8036, 51.9888 )
 rotation = 2.88794
 shape = SubResource( 1 )
+
+[node name="Follower" type="Node2D" parent="."]
+script = ExtResource( 2 )
