@@ -41,6 +41,8 @@ onready var keep_flat = get_node(keep_flat_path)
 
 var touching_ground = false
 
+export (Array, Curve) var leg_factors
+
 # builds bones when node is loaded
 # reload saved scene to rebuild after code change/ length alteration
 func _ready():
@@ -71,11 +73,22 @@ func _process(delta):
 			update_bones()
 	
 	if on:
-		place_joints()
+		place_joints_recursively(foot.global_position, 1)
+		
+func place_joints_recursively(where, iterations):
+	var toe = joints[joints.size()-1]
+	place_joints(where)
+	for i in range(iterations):
+		var error = get_angle_to(toe.global_position) - get_angle_to(where)
+		print(error)
+		var corrected_local = to_local(where).rotated(-error)
+		var rescaled_local = corrected_local*cos(error)
+		place_joints(to_global(rescaled_local))
+		where = to_global(rescaled_local)
 
-func place_joints():
+func place_joints(target):
 	var hip_pos = hip.global_position
-	var foot_pos = foot.global_position
+	var foot_pos = target
 	
 	# cast ray to target
 	raycast.cast_to = raycast.to_local(foot.global_position)
@@ -83,12 +96,12 @@ func place_joints():
 	
 	
 	keep_flat.scale.x = facing
-	
+	var allowed_length 
 	if raycast.is_colliding() and (raycast.get_collision_point() - hip_pos).length()<total_length:
 		# if ground within range 
 		# place foot on ground
-		foot_pos = raycast.get_collision_point()
-		
+#		foot_pos = raycast.get_collision_point()
+		allowed_length = to_local(raycast.get_collision_point()).length()
 		# rotate foot to be parallel to ground
 		keep_flat.rotation = raycast.get_collision_normal().angle()+TAU/4
 		
@@ -97,13 +110,13 @@ func place_joints():
 		# if no ground within range
 		# rotate foot to the midair angle
 		keep_flat.rotation = 0
-		
+		allowed_length = total_length
 		touching_ground = false
 	
 	# if foot further than should be possible
 	# assume it is as far as it can possibly be
-	if (hip_pos - foot_pos).length() > total_length:
-		foot_pos = hip_pos + total_length * (foot_pos-hip_pos).normalized()
+	if (hip_pos - foot_pos).length() > allowed_length:
+		foot_pos = hip_pos + allowed_length * (foot_pos-hip_pos).normalized()
 	
 	# get vector perpendicular to leg axis
 	var normal = (foot_pos-hip_pos).normalized().rotated(TAU/4)
@@ -114,13 +127,19 @@ func place_joints():
 	var v_length_so_far = 0.0
 	var h_offset_so_far = 0.0
 	
+	var fraction_pos = total_v_length/total_length
+#	print(fraction_pos)
+	var factor_sum = 0.0
+	for i in range(leg_factors.size()):
+		factor_sum += leg_factors[i].interpolate(fraction_pos)*bone_lengths[i]
+#	print(factor_sum)
 	# run code on all joints
 	for i in range(joints.size()):
 		# length of current bone
 		var r_length = bone_lengths[i]
 		
 		# length of current bone projected onto leg axis
-		var v_length = total_v_length*(r_length/total_length)
+		var v_length = total_v_length*leg_factors[i].interpolate(fraction_pos)*bone_lengths[i]/factor_sum
 		
 		# distance from joint to leg axis
 		var h_offset = sqrt( max( (r_length*r_length) - (v_length*v_length), 0) )

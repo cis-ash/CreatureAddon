@@ -1,10 +1,19 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Leg.gd" type="Script" id=1]
 [ext_resource path="res://Follower.gd" type="Script" id=2]
 [ext_resource path="res://StaticBody2D.gd" type="Script" id=4]
 
-[sub_resource type="CapsuleShape2D" id=1]
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 1.00698, 0, 0, Vector2( 1, 1 ), 1.17766, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0 ), 0.0, 1.05497, 0, 0, Vector2( 1, 1 ), 1.1111, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0 ), 0.0, 1.15206, 0, 0, Vector2( 1, 1 ), 1.16913, 0.0, 0, 0 ]
+
+[sub_resource type="CapsuleShape2D" id=4]
 radius = 136.16
 height = 150.0
 
@@ -12,11 +21,11 @@ height = 150.0
 position = Vector2( -1.05945, 0 )
 
 [node name="FootController" type="Node2D" parent="."]
-position = Vector2( 240.266, 611.919 )
+position = Vector2( 338.264, 603.013 )
 rotation = -1.23177
 
 [node name="Leg" type="Node2D" parent="."]
-position = Vector2( 241.363, -22.5086 )
+position = Vector2( 376.78, 23.8183 )
 script = ExtResource( 1 )
 foot_path = NodePath("../FootController")
 hip_path = NodePath("Hip")
@@ -25,22 +34,23 @@ biases = [ 0, 2, 0 ]
 facing = 1.0
 raycast_path = NodePath("RayCast2D")
 keep_flat_path = NodePath("Hip/Knee/Ankle/Toe")
+leg_factors = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ) ]
 
 [node name="Hip" type="Bone2D" parent="Leg"]
 position = Vector2( 0.790192, -4.91817 )
 default_length = 109.0
 
 [node name="Knee" type="Bone2D" parent="Leg/Hip"]
-position = Vector2( 101.456, 216.884 )
+position = Vector2( 150.019, 17.7901 )
 default_length = 86.0
 
 [node name="Ankle" type="Bone2D" parent="Leg/Hip/Knee"]
-position = Vector2( -128.767, 270.84 )
+position = Vector2( -250.093, 305.509 )
 default_length = 41.0
 
 [node name="Toe" type="Bone2D" parent="Leg/Hip/Knee/Ankle"]
-position = Vector2( 33.4682, 71.5452 )
-rotation = -0.95211
+position = Vector2( 78.2029, 11.0974 )
+rotation = 0.153328
 
 [node name="BentToe" type="Bone2D" parent="Leg/Hip/Knee/Ankle/Toe"]
 position = Vector2( 60, 0 )
@@ -48,17 +58,17 @@ default_length = 1.0
 
 [node name="RayCast2D" type="RayCast2D" parent="Leg"]
 enabled = true
-cast_to = Vector2( -1.09726, 634.427 )
+cast_to = Vector2( -38.5155, 579.194 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2( 298.264, 607.854 )
-rotation = 1546.13
+rotation = 2699.5
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2( 67.8036, 51.9888 )
 rotation = 2.88794
-shape = SubResource( 1 )
+shape = SubResource( 4 )
 
 [node name="Follower" type="Node2D" parent="."]
 script = ExtResource( 2 )
