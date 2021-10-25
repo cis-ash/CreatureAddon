@@ -1,19 +1,20 @@
 extends Path2D
 
-
+export (int, 1, 100) var raycast_count
 
 var legs : Array = []
 export (float, 0.0, 1.0) var legs_needed_percent
 var legs_grounded = 0
 
 var raycasts : Array = []
+var intersections : Array = []
 
 export (PackedScene) var raycast_on_string
 
 
 
 func _ready():
-	for i in range(1):
+	for i in range(raycast_count):
 		add_raycast()
 		pass
 	
@@ -48,22 +49,37 @@ func space_out_raycasts():
 		pass
 	pass
 
-#func get_new_position():
-#	$RayCast2D.force_raycast_update()
-#	if $RayCast2D.is_colliding():
-#		return($RayCast2D.get_collision_point())
-#	else:
-#		return(null)
-
-
-#func get_new_normal():
-#	$RayCast2D.force_raycast_update()
-#	return($RayCast2D.get_collision_normal())
 
 func get_new_target(requester_position):
-	return raycasts[0].get_intersection()
+	refresh_intersections()
+	return get_closest_intersection()
 	pass
+
+
+func refresh_intersections():
+	intersections = []
+	for raycast in raycasts:
+		intersections.append(raycast.get_intersection())
+		pass
+	pass
+
+func get_closest_intersection():
+	var closest_intersection = {"distance": INF, "position": null}
+	for intersection in intersections:
+		if not intersection == null:
+			if intersection["distance"] < closest_intersection["distance"]:
+				closest_intersection = intersection
+				pass
+			pass
+		pass
 	
+	
+	if closest_intersection["position"] == null:
+		return null
+	else:
+		return closest_intersection
+	
+	pass
 
 
 func get_closest_track_point(requester_position):
