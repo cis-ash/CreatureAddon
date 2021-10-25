@@ -3,6 +3,7 @@ extends Node2D
 
 # variable that turns on/off in-editor testing
 var on = false
+export (int, "dont error correct", "error correct") var iter
 
 # target object
 export (NodePath) var foot_path
@@ -73,7 +74,7 @@ func _process(delta):
 			update_bones()
 	
 	if on:
-		place_joints_recursively(foot.global_position, 1)
+		place_joints_recursively(foot.global_position, iter)
 		
 func place_joints_recursively(where, iterations):
 	var toe = joints[joints.size()-1]

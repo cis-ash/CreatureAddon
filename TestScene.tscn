@@ -1,0 +1,89 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Suspender.gd" type="Script" id=2]
+[ext_resource path="res://FootBase.gd" type="Script" id=3]
+[ext_resource path="res://Foot.gd" type="Script" id=4]
+[ext_resource path="res://Shapes/WHITE_Circle.png" type="Texture" id=5]
+
+[sub_resource type="Curve2D" id=9]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, -157.859, -352.345, -125.992, -182.689, 125.992, 182.689, -341.807, -184.776, -199.068, 22.6786, 199.068, -22.6786, 260.435, 42.0101, -56.6964, 144.891, 56.6964, -144.891, 509.899, -203.674, 0, 0, 0, 0, 346.109, -357.385, 0, 0, 0, 0, -157.859, -352.345 )
+}
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 100.863, 1607.09 )
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Foot" type="Node2D" parent="."]
+position = Vector2( 765.059, 304.498 )
+script = ExtResource( 4 )
+comfy_distance = 300.0
+tolerance = 68.639
+liftoff_speed = 1000.0
+move_speed = 1000.0
+lerp_speed = 3.269
+lerp_acceleration = 4.497
+slowdown_lerp = 3.846
+settling_lerp = 9.408
+base_path = NodePath("../Suspender/LegTrack/FootBase")
+gravity = 2366.86
+
+[node name="WHITE_Circle" type="Sprite" parent="Foot"]
+scale = Vector2( 0.267392, 0.267392 )
+texture = ExtResource( 5 )
+
+[node name="Line2D" type="Line2D" parent="Foot"]
+width = 35.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="Foot2" type="Node2D" parent="."]
+position = Vector2( 165.336, 327.177 )
+script = ExtResource( 4 )
+comfy_distance = 300.0
+tolerance = 68.639
+liftoff_speed = 1000.0
+move_speed = 1000.0
+lerp_speed = 3.269
+lerp_acceleration = 4.497
+slowdown_lerp = 3.846
+settling_lerp = 9.408
+base_path = NodePath("../Suspender/LegTrack/FootBase")
+gravity = 2366.86
+
+[node name="WHITE_Circle" type="Sprite" parent="Foot2"]
+scale = Vector2( 0.267392, 0.267392 )
+texture = ExtResource( 5 )
+
+[node name="Line2D" type="Line2D" parent="Foot2"]
+width = 35.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="Suspender" type="Node2D" parent="."]
+position = Vector2( 623.259, 263.033 )
+script = ExtResource( 2 )
+
+[node name="LegTrack" type="Path2D" parent="Suspender"]
+position = Vector2( -119.692, -12.5992 )
+curve = SubResource( 9 )
+
+[node name="FootBase" type="Node2D" parent="Suspender/LegTrack"]
+script = ExtResource( 3 )
+track_path = NodePath("..")
+
+[node name="RayCast2D" type="RayCast2D" parent="Suspender/LegTrack/FootBase"]
+cast_to = Vector2( 0, 250 )
+
+[node name="WorldCollisions" type="StaticBody2D" parent="."]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="WorldCollisions"]
+position = Vector2( 564.058, 583.117 )
+rotation = 1.57079
+shape = SubResource( 8 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 469.864, 154.841 )
+current = true
+zoom = Vector2( 2, 2 )
