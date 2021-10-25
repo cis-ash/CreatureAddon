@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://LegTrack.gd" type="Script" id=1]
-[ext_resource path="res://Body.gd" type="Script" id=2]
+[ext_resource path="res://Suspender.gd" type="Script" id=2]
 [ext_resource path="res://SensorOnARope.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Foot.gd" type="Script" id=4]
 [ext_resource path="res://Shapes/WHITE_Circle.png" type="Texture" id=5]
+[ext_resource path="res://Body.gd" type="Script" id=6]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -20,7 +21,7 @@ extents = Vector2( 100.863, 3066.29 )
 position = Vector2( -398.026, 413.046 )
 script = ExtResource( 4 )
 pushing = true
-comfy_distance = 200.0
+comfy_distance = 400.0
 tolerance = 100.0
 liftoff_speed = 2000.0
 move_speed = 3000.0
@@ -43,7 +44,7 @@ default_color = Color( 1, 1, 1, 1 )
 position = Vector2( 117.064, 413.046 )
 script = ExtResource( 4 )
 pushing = true
-comfy_distance = 200.0
+comfy_distance = 400.0
 tolerance = 100.0
 liftoff_speed = 2000.0
 move_speed = 3000.0
@@ -66,7 +67,7 @@ default_color = Color( 1, 1, 1, 1 )
 position = Vector2( -148.026, 413.046 )
 script = ExtResource( 4 )
 pushing = true
-comfy_distance = 200.0
+comfy_distance = 400.0
 tolerance = 100.0
 liftoff_speed = 2000.0
 move_speed = 3000.0
@@ -93,8 +94,8 @@ collision_mask = 2
 mass = 7.72
 can_sleep = false
 angular_damp = 6.957
-script = ExtResource( 2 )
-force_per_leg = 300.0
+script = ExtResource( 6 )
+force_per_leg = 30.0
 
 [node name="LegTrack" type="Path2D" parent="Body"]
 position = Vector2( -101.273, -95.7255 )
@@ -123,4 +124,26 @@ position = Vector2( 469.864, 154.841 )
 current = true
 zoom = Vector2( 5, 5 )
 
-[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
+position = Vector2( -368.111, 129.779 )
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 2 )
+
+[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="KinematicBody2D"]
+position = Vector2( -200.101, -11.3265 )
+rotation = 0.791695
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+length = 1.0
+stiffness = 10.0
+
+[node name="DampedSpringJoint2D2" type="DampedSpringJoint2D" parent="KinematicBody2D"]
+position = Vector2( 209.54, -5.66321 )
+rotation = 0.791695
+node_a = NodePath("..")
+node_b = NodePath("../../Body")
+length = 1.0
+stiffness = 10.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
