@@ -43,16 +43,15 @@ position = Vector2( 0.790192, -4.91817 )
 default_length = 109.0
 
 [node name="Knee" type="Bone2D" parent="Leg/Hip"]
-position = Vector2( 262.977, 378.394 )
+position = Vector2( 254.577, 384.095 )
 default_length = 86.0
 
 [node name="Ankle" type="Bone2D" parent="Leg/Hip/Knee"]
-position = Vector2( -190.676, 263.909 )
+position = Vector2( -92.7539, 345.307 )
 default_length = 41.0
 
 [node name="Toe" type="Bone2D" parent="Leg/Hip/Knee/Ankle"]
-position = Vector2( 6.08392, 78.7527 )
-rotation = 0.690141
+position = Vector2( 18.4249, 76.8082 )
 
 [node name="BentToe" type="Bone2D" parent="Leg/Hip/Knee/Ankle/Toe"]
 position = Vector2( 60, 0 )
@@ -60,16 +59,16 @@ default_length = 1.0
 
 [node name="RayCast2D" type="RayCast2D" parent="Leg"]
 enabled = true
-cast_to = Vector2( 84.4997, 775.567 )
+cast_to = Vector2( 84.4991, 775.567 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2( 287.573, 593.6 )
+position = Vector2( -185.011, 686.099 )
 rotation = 2998.04
 scale = Vector2( 1.53599, 1.53599 )
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 67.8036, 51.9888 )
+position = Vector2( 69.6077, -29.4589 )
 rotation = 2.88794
 shape = SubResource( 4 )
 

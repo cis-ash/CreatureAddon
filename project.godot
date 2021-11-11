@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Creature Addon"
-run/main_scene="res://TestScene.tscn"
+run/main_scene="res://WallCritters.tscn"
 config/icon="res://addons/creature_maker/icon.png"
 
 [editor_plugins]

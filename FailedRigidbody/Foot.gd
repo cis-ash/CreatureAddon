@@ -7,9 +7,6 @@ var normal = Vector2.UP
 var new_normal = Vector2.UP
 var speed = Vector2.ZERO
 
-export (bool) var pushing
-export (bool) var pulling
-
 export (float, 0, 1000) var comfy_distance
 export (float, 0, 100) var tolerance
 
