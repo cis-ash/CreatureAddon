@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Shapes/WHITE_Triangle.png" type="Texture" id=1]
+
+[node name="Leg" type="Node2D"]
+
+[node name="WHITE_Triangle" type="Sprite" parent="."]
+position = Vector2( 0, -15.5191 )
+scale = Vector2( 0.509336, 0.509336 )
+texture = ExtResource( 1 )

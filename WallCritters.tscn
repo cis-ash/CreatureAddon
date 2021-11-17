@@ -1,7 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Navigator.gd" type="Script" id=1]
 [ext_resource path="res://Shapes/WHITE_Circle.png" type="Texture" id=2]
+[ext_resource path="res://Shapes/WHITE_Triangle.png" type="Texture" id=3]
+[ext_resource path="res://Shapes/WHITE_Square.png" type="Texture" id=4]
+[ext_resource path="res://EyeManager.gd" type="Script" id=5]
 
 [sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 1803.99, 658.729, 3217.11, 348.694, 1571.25, 1157.35, 2056.45, 1956.5, 1761.52, 1870.88, 1219.25, 1081.25, 1159.83, 586.686, 1524.29, 196.803, 1846.36, 78.1434, 1083.55, 989.282, -398.076, 377.235, 884.372, -78.657, 467.667, 538.967, 20.5249, 1518.87, -226.83, 1433.25, 543.776, 1338.11, 524.749, 1766.23, -864.245, 1442.76 )
@@ -28,9 +31,6 @@ scale = 0.82
 scale_random = 1.0
 scale_curve = SubResource( 3 )
 
-[sub_resource type="Curve" id=5]
-_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -2.80438, 0.0, 0, 0 ]
-
 [node name="Node2D" type="Node2D"]
 
 [node name="ClimbableSurface" type="Navigation2D" parent="."]
@@ -40,14 +40,20 @@ position = Vector2( 0, -1.88776 )
 navpoly = SubResource( 1 )
 
 [node name="NavigationPolygonInstance2" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 2159.6, 1387.11 )
-rotation = 0.970758
+position = Vector2( 1191.98, 1921.32 )
+rotation = 0.32422
 navpoly = SubResource( 1 )
 
 [node name="Navigator" type="Node2D" parent="."]
 script = ExtResource( 1 )
 surface_path = NodePath("../ClimbableSurface")
+gravity = 5000
 dir_clamp = 200.0
+leg_distance_voluntary = 700.0
+leg_distance_mandatory = 1500.0
+attach_distance = 10
+leg_speed = 12000.0
+stable_number_of_legs = 2
 
 [node name="Body" type="Sprite" parent="Navigator"]
 modulate = Color( 0, 0, 0, 1 )
@@ -56,29 +62,230 @@ texture = ExtResource( 2 )
 
 [node name="Particles2D" type="Particles2D" parent="Navigator/Body"]
 show_behind_parent = true
+scale = Vector2( 1.58375, 1.58375 )
 amount = 23
 process_material = SubResource( 4 )
 texture = ExtResource( 2 )
 
-[node name="Walkers" type="Node2D" parent="Navigator/Body"]
-
-[node name="Line2D" type="Line2D" parent="Navigator/Body/Walkers"]
+[node name="VisualLegs" type="Node2D" parent="Navigator/Body"]
 scale = Vector2( 1.53973, 1.53973 )
-points = PoolVector2Array( 12.1809, -4.46405, 106.088, -39.8037, 233.904, -39.8037, 351.63, 27.468, 408.811, 165.375, 509.718, 306.646, 637.535, 370.554, 785.532, 367.19, 859.531, 249.465, 933.53, 148.557, 1034.71, 118.921, 1149.07, 142.466, 1233.16, 216.465 )
-width = 50.0
-width_curve = SubResource( 5 )
+
+[node name="Leg1" type="Line2D" parent="Navigator/Body/VisualLegs"]
+width = 35.0
 default_color = Color( 1, 1, 1, 1 )
 
-[node name="Eye" type="Sprite" parent="Navigator"]
-scale = Vector2( 0.347721, 0.347721 )
+[node name="VisualHands" type="Node2D" parent="Navigator/Body"]
+scale = Vector2( 1.53973, 1.53973 )
+
+[node name="Leg1" type="Sprite" parent="Navigator/Body/VisualHands"]
 texture = ExtResource( 2 )
 
-[node name="Iris" type="Sprite" parent="Navigator/Eye"]
+[node name="EyeManager" type="Node2D" parent="Navigator"]
+script = ExtResource( 5 )
+
+[node name="Eye" type="Sprite" parent="Navigator/EyeManager"]
+position = Vector2( 68.9028, 1.88774 )
+scale = Vector2( 0.317696, 0.317696 )
+texture = ExtResource( 2 )
+
+[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye"]
 self_modulate = Color( 0, 0, 0, 1 )
 scale = Vector2( 0.348678, 0.348678 )
 texture = ExtResource( 2 )
 
+[node name="Eye2" type="Sprite" parent="Navigator/EyeManager"]
+position = Vector2( -12.2703, 50.096 )
+scale = Vector2( 0.362752, 0.362752 )
+texture = ExtResource( 2 )
+
+[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye2"]
+self_modulate = Color( 0, 0, 0, 1 )
+scale = Vector2( 0.348678, 0.348678 )
+texture = ExtResource( 2 )
+
+[node name="Eye3" type="Sprite" parent="Navigator/EyeManager"]
+position = Vector2( -34.9233, -18.8068 )
+scale = Vector2( 0.290981, 0.290981 )
+texture = ExtResource( 2 )
+
+[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye3"]
+self_modulate = Color( 0, 0, 0, 1 )
+scale = Vector2( 0.348678, 0.348678 )
+texture = ExtResource( 2 )
+
+[node name="Eye4" type="Sprite" parent="Navigator/EyeManager"]
+position = Vector2( 30.204, -82.9902 )
+scale = Vector2( 0.412731, 0.412731 )
+texture = ExtResource( 2 )
+
+[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye4"]
+self_modulate = Color( 0, 0, 0, 1 )
+scale = Vector2( 0.348678, 0.348678 )
+texture = ExtResource( 2 )
+
+[node name="IdealTargets" type="Node2D" parent="Navigator"]
+visible = false
+modulate = Color( 1, 0.819608, 0, 1 )
+
+[node name="Leg1" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 739.921, -406.23 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg1"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg2" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 719.762, 294.286 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg2"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg3" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 311.547, -769.088 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg3"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg4" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 296.428, 727.699 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg4"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg5" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( -262.977, -552.381 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg5"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg6" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( -308.334, 505.953 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg6"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg7" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 553.452, -592.698 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg7"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg8" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 528.253, 505.953 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg8"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg9" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 341.785, -461.667 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg9"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg10" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 326.666, 334.603 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg10"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg11" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( -5.953, -411.27 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg11"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg12" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( -16.0326, 299.326 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg12"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg13" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( -535.12, -78.6507 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg13"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="Leg14" type="Node2D" parent="Navigator/IdealTargets"]
+visible = false
+position = Vector2( 825.595, -88.73 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/IdealTargets/Leg14"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="RealTargets" type="Node" parent="Navigator"]
+
+[node name="Leg1" type="Node2D" parent="Navigator/RealTargets"]
+visible = false
+position = Vector2( 750, -250 )
+
+[node name="WHITE_Square" type="Sprite" parent="Navigator/RealTargets/Leg1"]
+position = Vector2( 0, 1.88776 )
+scale = Vector2( 0.239811, 0.239811 )
+texture = ExtResource( 4 )
+
+[node name="LegManager" type="Node" parent="Navigator"]
+
+[node name="Leg1" type="Node2D" parent="Navigator/LegManager"]
+visible = false
+
+[node name="WHITE_Triangle" type="Sprite" parent="Navigator/LegManager/Leg1"]
+position = Vector2( 0, -15.5191 )
+scale = Vector2( 0.509336, 0.509336 )
+texture = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="Navigator"]
+margin_left = 214.057
+margin_top = -171.246
+margin_right = 254.057
+margin_bottom = -157.246
+rect_scale = Vector2( 5, 5 )
+text = "Tixt"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 2107.57, 1748.77 )
 current = true
-zoom = Vector2( 5, 5 )
+zoom = Vector2( 10, 10 )
