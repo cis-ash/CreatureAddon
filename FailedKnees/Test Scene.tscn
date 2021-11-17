@@ -43,15 +43,16 @@ position = Vector2( 0.790192, -4.91817 )
 default_length = 109.0
 
 [node name="Knee" type="Bone2D" parent="Leg/Hip"]
-position = Vector2( 254.577, 384.095 )
+position = Vector2( 160.748, 41.6625 )
 default_length = 86.0
 
 [node name="Ankle" type="Bone2D" parent="Leg/Hip/Knee"]
-position = Vector2( -92.7539, 345.307 )
+position = Vector2( -605.098, 415.204 )
 default_length = 41.0
 
 [node name="Toe" type="Bone2D" parent="Leg/Hip/Knee/Ankle"]
-position = Vector2( 18.4249, 76.8082 )
+position = Vector2( 51.7466, 59.6765 )
+rotation = 0.639154
 
 [node name="BentToe" type="Bone2D" parent="Leg/Hip/Knee/Ankle/Toe"]
 position = Vector2( 60, 0 )
@@ -68,7 +69,7 @@ scale = Vector2( 1.53599, 1.53599 )
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 69.6077, -29.4589 )
+position = Vector2( 283.448, -189.299 )
 rotation = 2.88794
 shape = SubResource( 4 )
 
