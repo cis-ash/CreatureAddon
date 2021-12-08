@@ -1,21 +1,153 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://Navigator.gd" type="Script" id=1]
 [ext_resource path="res://Shapes/WHITE_Circle.png" type="Texture" id=2]
 [ext_resource path="res://Shapes/WHITE_Triangle.png" type="Texture" id=3]
 [ext_resource path="res://Shapes/WHITE_Square.png" type="Texture" id=4]
 [ext_resource path="res://EyeManager.gd" type="Script" id=5]
-[ext_resource path="res://Shapes/horizontalgradient.png" type="Texture" id=6]
+[ext_resource path="res://Shapes/stubbygradient.png" type="Texture" id=6]
+[ext_resource path="res://wall.png" type="Texture" id=7]
+[ext_resource path="res://Camera2D.gd" type="Script" id=8]
+[ext_resource path="res://WallCritters.gd" type="Script" id=9]
 
-[sub_resource type="NavigationPolygon" id=1]
-vertices = PoolVector2Array( 1803.99, 658.729, 3217.11, 348.694, 1571.25, 1157.35, 2056.45, 1956.5, 1761.52, 1870.88, 1219.25, 1081.25, 1159.83, 586.686, 1524.29, 196.803, 1846.36, 78.1434, 1083.55, 989.282, -398.076, 377.235, 884.372, -78.657, 467.667, 538.967, 20.5249, 1518.87, -226.83, 1433.25, 543.776, 1338.11, 524.749, 1766.23, -864.245, 1442.76 )
-polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 2, 3, 4, 5, 6 ), PoolIntArray( 6, 7, 8, 0, 2 ), PoolIntArray( 6, 5, 9 ), PoolIntArray( 10, 11, 6, 12 ), PoolIntArray( 12, 13, 14, 10 ), PoolIntArray( 15, 12, 6, 9 ), PoolIntArray( 15, 9, 16 ), PoolIntArray( 17, 15, 16 ) ]
-outlines = [ PoolVector2Array( -864.245, 1442.76, 524.749, 1766.23, 1083.55, 989.282, 1219.25, 1081.25, 1761.52, 1870.88, 2056.45, 1956.5, 1571.25, 1157.35, 3217.11, 348.694, 1803.99, 658.729, 1846.36, 78.1434, 1524.29, 196.803, 1159.83, 586.686, 884.372, -78.657, -398.076, 377.235, -226.83, 1433.25, 20.5249, 1518.87, 467.667, 538.967, 543.776, 1338.11 ) ]
+[sub_resource type="Shader" id=35]
+code = "shader_type canvas_item;
+uniform sampler2D noise_1;
+uniform sampler2D noise_2;
+uniform vec4 sky1 : hint_color;
+uniform vec4 cloud1 : hint_color;
 
-[sub_resource type="NavigationPolygon" id=2]
-vertices = PoolVector2Array( -1165.84, 1755.2, 2799.28, 998.292, 3999.94, 1005.05, -1345.02, 2038.99 )
+void fragment(){
+	float noise1 = texture(noise_1, UV*0.2 + TIME * vec2(0.3, 0.7)*0.1).r;
+	float noise2 = texture(noise_2, UV*0.2 + TIME * vec2(-0.7, -0.3)*0.1).r;
+	COLOR = mix(sky1, cloud1, noise1 * noise2 * 3.0);
+}"
+
+[sub_resource type="OpenSimplexNoise" id=36]
+octaves = 5
+period = 256.0
+persistence = 0.413
+
+[sub_resource type="NoiseTexture" id=37]
+width = 2048
+height = 2048
+seamless = true
+noise = SubResource( 36 )
+
+[sub_resource type="OpenSimplexNoise" id=38]
+seed = 1
+octaves = 5
+period = 256.0
+persistence = 0.75
+lacunarity = 1.62
+
+[sub_resource type="NoiseTexture" id=39]
+width = 2048
+height = 2048
+seamless = true
+noise = SubResource( 38 )
+
+[sub_resource type="ShaderMaterial" id=40]
+shader = SubResource( 35 )
+shader_param/sky1 = Color( 0.454902, 0.858824, 0.984314, 1 )
+shader_param/cloud1 = Color( 1, 1, 1, 1 )
+shader_param/noise_1 = SubResource( 37 )
+shader_param/noise_2 = SubResource( 39 )
+
+[sub_resource type="NavigationPolygon" id=15]
+vertices = PoolVector2Array( 3151.39, 93.9978, 3146.9, 300.531, -341.715, 646.249, -332.736, 435.226 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
-outlines = [ PoolVector2Array( -1345.02, 2038.99, 3999.94, 1005.05, 2799.28, 998.292, -1165.84, 1755.2 ) ]
+outlines = [ PoolVector2Array( 3151.39, 93.9978, 3146.9, 300.531, -341.715, 646.249, -332.736, 435.226 ) ]
+
+[sub_resource type="NavigationPolygon" id=17]
+vertices = PoolVector2Array( 3105.49, 557.97, 3113.49, 707.208, -498.898, 472.927, -500.033, 340.881 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 3105.49, 557.97, 3113.49, 707.208, -498.898, 472.927, -500.033, 340.881 ) ]
+
+[sub_resource type="NavigationPolygon" id=18]
+vertices = PoolVector2Array( 5653.55, 562.157, 5635.75, 797.896, -572.303, 487.401, -436.735, 273.961 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 5653.55, 562.157, 5635.75, 797.896, -572.303, 487.401, -436.735, 273.961 ) ]
+
+[sub_resource type="NavigationPolygon" id=19]
+vertices = PoolVector2Array( 450.276, 1570.66, 856.106, 1604.85, 397.637, 1780.42, -21.2654, 1200.91, -249.494, 174.117, -74.3613, -88.7031, 107.031, 1130.85, 155.128, 1545.8 )
+polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 4, 5, 6, 7 ), PoolIntArray( 0, 2, 7, 6 ) ]
+outlines = [ PoolVector2Array( 155.128, 1545.8, -21.2654, 1200.91, -249.494, 174.117, -74.3613, -88.7031, 107.031, 1130.85, 450.276, 1570.66, 856.106, 1604.85, 397.637, 1780.42 ) ]
+
+[sub_resource type="NavigationPolygon" id=20]
+vertices = PoolVector2Array( 3089.07, -1263.04, 4080.52, 756.329, 4033.44, 862.25, 2909.79, -1210.39, 2861.9, -1653.73, -33.7749, 185.222, -77.9277, 8.83984, 2710.6, -1544.08, 2026.58, -3136.55, 2069.27, -3167.38, 4332.43, -2375.68, 4513.39, -1877.42 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 3, 5, 6, 7 ), PoolIntArray( 7, 8, 9, 4, 3 ), PoolIntArray( 4, 10, 11, 0 ) ]
+outlines = [ PoolVector2Array( 2710.6, -1544.08, 2026.58, -3136.55, 2069.27, -3167.38, 2861.9, -1653.73, 4332.43, -2375.68, 4513.39, -1877.42, 3089.07, -1263.04, 4080.52, 756.329, 4033.44, 862.25, 2909.79, -1210.39, -33.7749, 185.222, -77.9277, 8.83984 ) ]
+
+[sub_resource type="NavigationPolygon" id=21]
+vertices = PoolVector2Array( 1084.71, -4271.92, 1204.59, -4465.82, 121.193, -172.615, -7.04761, -209.691, 253.399, 147.614, -227.468, 3.55957 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 2, 4, 5, 3 ) ]
+outlines = [ PoolVector2Array( 1084.71, -4271.92, 1204.59, -4465.82, 121.193, -172.615, 253.399, 147.614, -227.468, 3.55957, -7.04761, -209.691 ) ]
+
+[sub_resource type="NavigationPolygon" id=22]
+vertices = PoolVector2Array( 234.516, -385.199, 427.328, -7.72656, 61.2773, 269.408, -209.491, -144.734 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 234.516, -385.199, 427.328, -7.72656, 61.2773, 269.408, -209.491, -144.734 ) ]
+
+[sub_resource type="NavigationPolygon" id=23]
+vertices = PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, -22.4502, 201.125, -264.214, -164.775 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, -22.4502, 201.125, -264.214, -164.775 ) ]
+
+[sub_resource type="NavigationPolygon" id=24]
+vertices = PoolVector2Array( 143.766, -280.024, 388.502, -81.0068, 350.488, 294.328, -101.544, -142.453 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 143.766, -280.024, 388.502, -81.0068, 350.488, 294.328, -101.544, -142.453 ) ]
+
+[sub_resource type="NavigationPolygon" id=25]
+vertices = PoolVector2Array( 321.116, -486.685, 515.414, 7.49414, -49.4385, 274.934, -256.337, -254.992 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 321.116, -486.685, 515.414, 7.49414, -49.4385, 274.934, -256.337, -254.992 ) ]
+
+[sub_resource type="NavigationPolygon" id=26]
+vertices = PoolVector2Array( 207.082, -525.617, 553.125, -90.9453, 47.0186, 243.216, -256.951, -196.524 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 207.082, -525.617, 553.125, -90.9453, 47.0186, 243.216, -256.951, -196.524 ) ]
+
+[sub_resource type="NavigationPolygon" id=27]
+vertices = PoolVector2Array( 336.51, -634.399, 680.066, -61.9775, 9.25781, 246.933, -349.344, -238.417 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 336.51, -634.399, 680.066, -61.9775, 9.25781, 246.933, -349.344, -238.417 ) ]
+
+[sub_resource type="NavigationPolygon" id=28]
+vertices = PoolVector2Array( 600.012, -448.553, 812.207, 57.8047, 228.291, 253.127, 37.2598, -259.283 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 600.012, -448.553, 812.207, 57.8047, 228.291, 253.127, 37.2598, -259.283 ) ]
+
+[sub_resource type="NavigationPolygon" id=29]
+vertices = PoolVector2Array( 4094.47, -50.4902, 4416.69, -171.207, 4919.74, 609.597, 4134.39, 1036.9, 3903.28, 817.607, -2182.35, 934.54, -2708.81, 1199.3, -3276.83, 11.8301, -3496.96, -1206.66, -1119.8, -2474.62, 541.993, -1667.3, 431.086, -3997.1, 2495.04, -4065.24, 2568.32, -2422.29, -1000.98, 2460.28, -1439.78, 2243.32, 2703.08, 1680.38, -368.551, 2356.42, 3370.78, 2248.55, 4080.89, 2256.61, 4249.19, 2864.89, 2480.53, 7909.75, 4737.68, 2896.4, 5075.58, 3459.02, 2888.3, 7974.79, 1104.64, 7449.98, 999.268, 6792.3, 2009.12, 8247.24, 1588.1, 8242.1, 543.199, 6794.33, -41.5684, 6256.66, -619.35, 6342.03, -929.666, 5985.58, -1179.38, 5372.04, -32.873, 3050.97, -606.732, 2441.69 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 6, 7, 8, 9, 10 ), PoolIntArray( 10, 11, 12, 13 ), PoolIntArray( 14, 15, 5, 10, 13, 0, 4, 16, 17 ), PoolIntArray( 18, 19, 20, 21 ), PoolIntArray( 22, 23, 24, 21, 20 ), PoolIntArray( 25, 26, 16, 18, 21, 27, 28 ), PoolIntArray( 16, 26, 29, 30 ), PoolIntArray( 16, 30, 31, 32, 33, 34 ), PoolIntArray( 16, 34, 17 ), PoolIntArray( 14, 17, 35 ) ]
+outlines = [ PoolVector2Array( -32.873, 3050.97, -368.551, 2356.42, -606.732, 2441.69, -1000.98, 2460.28, -1439.78, 2243.32, -2182.35, 934.54, -2708.81, 1199.3, -3276.83, 11.8301, -3496.96, -1206.66, -1119.8, -2474.62, 541.993, -1667.3, 431.086, -3997.1, 2495.04, -4065.24, 2568.32, -2422.29, 4094.47, -50.4902, 4416.69, -171.207, 4919.74, 609.597, 4134.39, 1036.9, 3903.28, 817.607, 2703.08, 1680.38, 3370.78, 2248.55, 4080.89, 2256.61, 4249.19, 2864.89, 4737.68, 2896.4, 5075.58, 3459.02, 2888.3, 7974.79, 2480.53, 7909.75, 2009.12, 8247.24, 1588.1, 8242.1, 1104.64, 7449.98, 999.268, 6792.3, 543.199, 6794.33, -41.5684, 6256.66, -619.35, 6342.03, -929.666, 5985.58, -1179.38, 5372.04 ) ]
+
+[sub_resource type="NavigationPolygon" id=30]
+vertices = PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, 100.001, 123.03, -47.9287, -330.743 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, 100.001, 123.03, -47.9287, -330.743 ) ]
+
+[sub_resource type="NavigationPolygon" id=31]
+vertices = PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, 295.787, 44.6919, 85.9658, -300.767 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 334.678, -551.829, 504.647, -56.8613, 295.787, 44.6919, 85.9658, -300.767 ) ]
+
+[sub_resource type="NavigationPolygon" id=32]
+vertices = PoolVector2Array( -329.135, 223.592, 624.303, -3480.27, 813.744, -3918.26, 822.123, -3428.68, 14.0359, -10.3164, 6334.13, -246.131, 2652.93, -1032.25, 2730.83, -1237.04, 6466.76, -424.258, 9997.4, 1363.68, 10729.1, 1557.65, 10447.6, 2498.82, 9034.99, 2032.46, 9250.91, 1236.47, 8949.5, -988.852, 10223.9, -888.844, 8815.15, 82.3379, 8757.15, 1163.63, 8703.79, 291.665, 7007.93, -303.314, 7638, 71.3857, 5497.09, 2555.95, 4767.67, 2051.57, 7981.88, 396.253, 6174.56, 2978.76, 6589.63, -573.802 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 6, 7, 8 ), PoolIntArray( 9, 10, 11, 12, 13 ), PoolIntArray( 14, 15, 9, 13, 16 ), PoolIntArray( 16, 13, 17, 18 ), PoolIntArray( 19, 16, 18, 20, 5 ), PoolIntArray( 21, 0, 4, 22 ), PoolIntArray( 21, 22, 5, 20, 23, 24 ), PoolIntArray( 25, 19, 5, 8 ) ]
+outlines = [ PoolVector2Array( 624.303, -3480.27, 813.744, -3918.26, 822.123, -3428.68, 14.0359, -10.3164, 4767.67, 2051.57, 6334.13, -246.131, 2652.93, -1032.25, 2730.83, -1237.04, 6466.76, -424.258, 6589.63, -573.802, 7007.93, -303.314, 8815.15, 82.3379, 8949.5, -988.852, 10223.9, -888.844, 9997.4, 1363.68, 10729.1, 1557.65, 10447.6, 2498.82, 9034.99, 2032.46, 9250.91, 1236.47, 8757.15, 1163.63, 8703.79, 291.665, 7638, 71.3857, 7981.88, 396.253, 6174.56, 2978.76, 5497.09, 2555.95, -329.135, 223.592 ) ]
+
+[sub_resource type="NavigationPolygon" id=33]
+vertices = PoolVector2Array( 1910.54, -577.686, 3260.66, -130.129, 2846.67, 1298.55, 866.929, 729.949, 311.863, -808.181, 846.273, 1085.21, -684.832, 1226.68, -926.269, -640.482, 1309.17, -1822.99, 1715.15, -1597.15, 1960.65, -1117.47, 505.303, -1453.34, 742.138, -1714.66 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 6, 7, 4, 3 ), PoolIntArray( 8, 9, 10, 0, 4, 11, 12 ) ]
+outlines = [ PoolVector2Array( 2846.67, 1298.55, 866.929, 729.949, 846.273, 1085.21, -684.832, 1226.68, -926.269, -640.482, 311.863, -808.181, 505.303, -1453.34, 742.138, -1714.66, 1309.17, -1822.99, 1715.15, -1597.15, 1960.65, -1117.47, 1910.54, -577.686, 3260.66, -130.129 ) ]
+
+[sub_resource type="NavigationPolygon" id=34]
+vertices = PoolVector2Array( 1537.56, -904.557, 1741.08, 331.51, -219.928, 727.092, -418.28, -524.116 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( -418.28, -524.116, -219.928, 727.092, 1741.08, 331.51, 1537.56, -904.557 ) ]
 
 [sub_resource type="Shader" id=3]
 code = "shader_type canvas_item;
@@ -45,12 +177,13 @@ noise = SubResource( 4 )
 [sub_resource type="ShaderMaterial" id=6]
 shader = SubResource( 3 )
 shader_param/scrollspeed = Vector2( 1.612, 0.567 )
-shader_param/cutoff = 0.549
-shader_param/noise_influence = 0.711
+shader_param/cutoff = 0.67
+shader_param/noise_influence = 0.834
 shader_param/noise = SubResource( 5 )
 
 [sub_resource type="Curve" id=7]
-_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.441327 ), -1.74211, 0.0, 0, 0 ]
+max_value = 3.0
+_data = [ Vector2( 0.166667, 3 ), 0.0, -10.4193, 0, 0, Vector2( 0.359375, 1.04082 ), -0.130612, -0.130612, 0, 0, Vector2( 1, 0.428571 ), -0.683436, 0.0, 0, 0 ]
 
 [sub_resource type="Curve" id=8]
 _data = [ Vector2( 0, 0 ), 0.0, 8.10131, 0, 0, Vector2( 0.319298, 0.989796 ), 0.223705, 0.223705, 0, 0, Vector2( 1, 0 ), -2.9937, 0.0, 0, 0 ]
@@ -75,61 +208,199 @@ scale = 0.7
 scale_random = 1.0
 scale_curve = SubResource( 9 )
 
+[sub_resource type="Shader" id=11]
+code = "shader_type canvas_item;
+uniform vec2 offset;
+uniform float blur_level;
+uniform float mix_amount;
+
+void fragment(){
+	vec3 blur = textureLod(SCREEN_TEXTURE, SCREEN_UV + offset, blur_level).rgb;
+	vec3 real = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
+	COLOR.rgb = mix( real, blur * real, mix_amount);
+}"
+
+[sub_resource type="ShaderMaterial" id=12]
+shader = SubResource( 11 )
+shader_param/offset = Vector2( 0.005, 0.011 )
+shader_param/blur_level = 1.917
+shader_param/mix_amount = 0.5
+
+[sub_resource type="Shader" id=13]
+code = "shader_type canvas_item;
+uniform vec2 offset;
+uniform float blur_level;
+uniform float threshold;
+
+void fragment(){
+	vec3 blur = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur_level).rgb;
+	if (length(blur) < threshold){
+		COLOR.rgb = vec3(0.0);
+		COLOR.a = 1.0;
+	}else{
+		COLOR.rgb = vec3(1.0);
+		COLOR.a = 0.0;
+	
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = SubResource( 13 )
+shader_param/offset = Vector2( 0.005, 0.011 )
+shader_param/blur_level = 2.056
+shader_param/threshold = 1.064
+
+[sub_resource type="Gradient" id=41]
+offsets = PoolRealArray( 0, 0.248447, 0.645963, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 0.294279, 0.188766, 0.347656, 1, 0.933594, 0.822479, 0.714783, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=42]
+gradient = SubResource( 41 )
+
+[sub_resource type="Environment" id=16]
+background_mode = 4
+tonemap_exposure = 0.7
+tonemap_white = 1.64
+adjustment_enabled = true
+adjustment_brightness = 0.78
+adjustment_contrast = 1.48
+adjustment_saturation = 1.22
+adjustment_color_correction = SubResource( 42 )
+
 [node name="Node2D" type="Node2D"]
+script = ExtResource( 9 )
+critter_path = NodePath("Navigator")
+
+[node name="sky" type="TextureRect" parent="."]
+material = SubResource( 40 )
+margin_left = -7486.0
+margin_top = -5357.0
+margin_right = 35571.0
+margin_bottom = 20925.0
+texture = ExtResource( 7 )
+expand = true
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ClimbableSurface" type="Navigation2D" parent="."]
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 0, -1.88776 )
-navpoly = SubResource( 1 )
+position = Vector2( 2796.98, 1778.01 )
+navpoly = SubResource( 15 )
 
 [node name="NavigationPolygonInstance2" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 1191.98, 1921.32 )
-rotation = 0.32422
-navpoly = SubResource( 1 )
+position = Vector2( 5434.63, 3956.47 )
+rotation = -0.945904
+navpoly = SubResource( 17 )
 
 [node name="NavigationPolygonInstance3" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 24.6196, 3393.99 )
-rotation = 3.36382
-navpoly = SubResource( 1 )
+position = Vector2( 3059.88, 7016.98 )
+rotation = -0.329022
+navpoly = SubResource( 18 )
 
 [node name="NavigationPolygonInstance5" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 4729.98, 1580.09 )
-rotation = 3.36382
-navpoly = SubResource( 1 )
+position = Vector2( 793.431, 10152.9 )
+rotation = -0.329022
+navpoly = SubResource( 19 )
 
 [node name="NavigationPolygonInstance6" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 5187.95, 4480.53 )
-rotation = 3.36382
-navpoly = SubResource( 1 )
+position = Vector2( 2076.32, 13103.6 )
+rotation = -0.329022
+navpoly = SubResource( 20 )
 
 [node name="NavigationPolygonInstance7" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 6714.49, 3573.58 )
-rotation = 3.36382
-navpoly = SubResource( 1 )
+position = Vector2( 6466.67, 11093.7 )
+rotation = -0.329022
+navpoly = SubResource( 21 )
 
 [node name="NavigationPolygonInstance8" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( -1862.92, 2607.35 )
-rotation = 3.36382
-navpoly = SubResource( 2 )
-
-[node name="NavigationPolygonInstance9" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 9002.94, 6065.44 )
-rotation = 3.36382
-navpoly = SubResource( 2 )
-
-[node name="NavigationPolygonInstance10" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( 9070.74, 2115.76 )
-rotation = 3.36382
-navpoly = SubResource( 2 )
+position = Vector2( 7678.29, 7273.56 )
+rotation = -0.329022
+navpoly = SubResource( 22 )
 
 [node name="NavigationPolygonInstance11" type="NavigationPolygonInstance" parent="ClimbableSurface"]
-position = Vector2( -1201.82, 4895.79 )
-rotation = 3.36382
-navpoly = SubResource( 2 )
+position = Vector2( 11169.8, 2906.79 )
+rotation = -0.768241
+navpoly = SubResource( 23 )
+
+[node name="NavigationPolygonInstance19" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 8529.78, 4172.92 )
+rotation = -0.768241
+navpoly = SubResource( 24 )
+
+[node name="NavigationPolygonInstance12" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 17591.5, 1755.64 )
+rotation = -0.768241
+navpoly = SubResource( 25 )
+
+[node name="NavigationPolygonInstance13" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 19399.1, 3039.98 )
+rotation = -2.09439
+navpoly = SubResource( 26 )
+
+[node name="NavigationPolygonInstance14" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 18866.4, 5805.27 )
+rotation = -2.61799
+navpoly = SubResource( 27 )
+
+[node name="NavigationPolygonInstance20" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 18409.2, 13602.6 )
+rotation = -2.61799
+navpoly = SubResource( 28 )
+
+[node name="NavigationPolygonInstance21" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 23308, 11622.7 )
+rotation = -2.61799
+navpoly = SubResource( 29 )
+
+[node name="NavigationPolygonInstance15" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 13671.9, 1711.44 )
+rotation = -2.61799
+navpoly = SubResource( 30 )
+
+[node name="NavigationPolygonInstance16" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 16556.6, 3411.71 )
+rotation = -2.61799
+navpoly = SubResource( 31 )
+
+[node name="NavigationPolygonInstance17" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 16440.4, 4641.11 )
+rotation = -4.63485
+navpoly = SubResource( 23 )
+
+[node name="NavigationPolygonInstance9" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 7892.11, 12055.5 )
+rotation = -0.329022
+navpoly = SubResource( 32 )
+
+[node name="NavigationPolygonInstance10" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 10586.2, 7066.09 )
+rotation = -0.329022
+navpoly = SubResource( 33 )
+
+[node name="NavigationPolygonInstance18" type="NavigationPolygonInstance" parent="ClimbableSurface"]
+position = Vector2( 14778.2, 7722.09 )
+rotation = -0.329022
+navpoly = SubResource( 34 )
+
+[node name="wall2" type="Sprite" parent="ClimbableSurface"]
+self_modulate = Color( 0, 0, 0, 0.341176 )
+position = Vector2( 13967, 7839.22 )
+scale = Vector2( 7, 7 )
+texture = ExtResource( 7 )
+
+[node name="wall" type="Sprite" parent="ClimbableSurface"]
+position = Vector2( 14047.6, 7748.5 )
+scale = Vector2( 7, 7 )
+texture = ExtResource( 7 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Navigator" type="Node2D" parent="."]
-position = Vector2( 379.095, -614.026 )
+position = Vector2( 13134.3, 4144.21 )
 script = ExtResource( 1 )
 surface_path = NodePath("../ClimbableSurface")
 gravity = 7000
@@ -171,7 +442,6 @@ antialiased = true
 self_modulate = Color( 0, 0, 0, 1 )
 show_behind_parent = true
 scale = Vector2( 2.05863, 2.05863 )
-z_index = 1
 amount = 36
 lifetime = 1.5
 speed_scale = 4.1
@@ -189,7 +459,7 @@ orbit_gravity = 0.5
 max_distance_spring = 1000
 speed_damp = 10.0
 assumed_radius = 250.0
-rand_force = 20000.0
+rand_force = 15000.0
 
 [node name="Eye" type="Node2D" parent="Navigator/EyeManager"]
 
@@ -360,6 +630,35 @@ scale = Vector2( 0.509336, 0.509336 )
 texture = ExtResource( 3 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( -30.5862, 1706.01 )
+position = Vector2( 13098.3, 4141.51 )
 current = true
-zoom = Vector2( 7, 7 )
+zoom = Vector2( 10, 10 )
+script = ExtResource( 8 )
+target_path = NodePath("../Navigator")
+enthusiasm = 5.0
+rate = 3.0
+
+[node name="Overlay" type="ColorRect" parent="Camera2D"]
+material = SubResource( 12 )
+margin_left = -11055.0
+margin_top = -7018.82
+margin_right = 11703.0
+margin_bottom = 6734.18
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Overlay2" type="ColorRect" parent="Camera2D"]
+material = SubResource( 14 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -9410.07
+margin_top = -5396.37
+margin_right = 9685.93
+margin_bottom = 6935.63
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 16 )
