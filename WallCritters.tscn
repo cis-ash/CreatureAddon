@@ -12,12 +12,12 @@ vertices = PoolVector2Array( 1803.99, 658.729, 3217.11, 348.694, 1571.25, 1157.3
 polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 2, 3, 4, 5, 6 ), PoolIntArray( 6, 7, 8, 0, 2 ), PoolIntArray( 6, 5, 9 ), PoolIntArray( 10, 11, 6, 12 ), PoolIntArray( 12, 13, 14, 10 ), PoolIntArray( 15, 12, 6, 9 ), PoolIntArray( 15, 9, 16 ), PoolIntArray( 17, 15, 16 ) ]
 outlines = [ PoolVector2Array( -864.245, 1442.76, 524.749, 1766.23, 1083.55, 989.282, 1219.25, 1081.25, 1761.52, 1870.88, 2056.45, 1956.5, 1571.25, 1157.35, 3217.11, 348.694, 1803.99, 658.729, 1846.36, 78.1434, 1524.29, 196.803, 1159.83, 586.686, 884.372, -78.657, -398.076, 377.235, -226.83, 1433.25, 20.5249, 1518.87, 467.667, 538.967, 543.776, 1338.11 ) ]
 
-[sub_resource type="NavigationPolygon" id=5]
+[sub_resource type="NavigationPolygon" id=2]
 vertices = PoolVector2Array( -1165.84, 1755.2, 2799.28, 998.292, 3999.94, 1005.05, -1345.02, 2038.99 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
 outlines = [ PoolVector2Array( -1345.02, 2038.99, 3999.94, 1005.05, 2799.28, 998.292, -1165.84, 1755.2 ) ]
 
-[sub_resource type="Shader" id=7]
+[sub_resource type="Shader" id=3]
 code = "shader_type canvas_item;
 uniform sampler2D noise;
 uniform vec2 scrollspeed;
@@ -33,32 +33,32 @@ void fragment(){
 	}
 }"
 
-[sub_resource type="OpenSimplexNoise" id=8]
+[sub_resource type="OpenSimplexNoise" id=4]
 octaves = 9
 period = 123.4
 persistence = 0.226
 
-[sub_resource type="NoiseTexture" id=9]
+[sub_resource type="NoiseTexture" id=5]
 seamless = true
-noise = SubResource( 8 )
+noise = SubResource( 4 )
 
-[sub_resource type="ShaderMaterial" id=10]
-shader = SubResource( 7 )
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 3 )
 shader_param/scrollspeed = Vector2( 1.612, 0.567 )
 shader_param/cutoff = 0.549
 shader_param/noise_influence = 0.711
-shader_param/noise = SubResource( 9 )
+shader_param/noise = SubResource( 5 )
 
-[sub_resource type="Curve" id=6]
+[sub_resource type="Curve" id=7]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.441327 ), -1.74211, 0.0, 0, 0 ]
 
-[sub_resource type="Curve" id=2]
+[sub_resource type="Curve" id=8]
 _data = [ Vector2( 0, 0 ), 0.0, 8.10131, 0, 0, Vector2( 0.319298, 0.989796 ), 0.223705, 0.223705, 0, 0, Vector2( 1, 0 ), -2.9937, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=3]
-curve = SubResource( 2 )
+[sub_resource type="CurveTexture" id=9]
+curve = SubResource( 8 )
 
-[sub_resource type="ParticlesMaterial" id=4]
+[sub_resource type="ParticlesMaterial" id=10]
 emission_shape = 1
 emission_sphere_radius = 128.0
 flag_disable_z = true
@@ -73,7 +73,7 @@ linear_accel = -1000.0
 linear_accel_random = 0.31
 scale = 0.7
 scale_random = 1.0
-scale_curve = SubResource( 3 )
+scale_curve = SubResource( 9 )
 
 [node name="Node2D" type="Node2D"]
 
@@ -111,24 +111,25 @@ navpoly = SubResource( 1 )
 [node name="NavigationPolygonInstance8" type="NavigationPolygonInstance" parent="ClimbableSurface"]
 position = Vector2( -1862.92, 2607.35 )
 rotation = 3.36382
-navpoly = SubResource( 5 )
+navpoly = SubResource( 2 )
 
 [node name="NavigationPolygonInstance9" type="NavigationPolygonInstance" parent="ClimbableSurface"]
 position = Vector2( 9002.94, 6065.44 )
 rotation = 3.36382
-navpoly = SubResource( 5 )
+navpoly = SubResource( 2 )
 
 [node name="NavigationPolygonInstance10" type="NavigationPolygonInstance" parent="ClimbableSurface"]
 position = Vector2( 9070.74, 2115.76 )
 rotation = 3.36382
-navpoly = SubResource( 5 )
+navpoly = SubResource( 2 )
 
 [node name="NavigationPolygonInstance11" type="NavigationPolygonInstance" parent="ClimbableSurface"]
 position = Vector2( -1201.82, 4895.79 )
 rotation = 3.36382
-navpoly = SubResource( 5 )
+navpoly = SubResource( 2 )
 
 [node name="Navigator" type="Node2D" parent="."]
+position = Vector2( 379.095, -614.026 )
 script = ExtResource( 1 )
 surface_path = NodePath("../ClimbableSurface")
 gravity = 7000
@@ -154,10 +155,10 @@ scale = Vector2( 1.53973, 1.53973 )
 
 [node name="Leg1" type="Line2D" parent="Navigator/Body/VisualLegs"]
 self_modulate = Color( 0, 0, 0, 1 )
-material = SubResource( 10 )
-points = PoolVector2Array( 0, 0, 300, 0, 600, 0, 900, 0 )
+material = SubResource( 6 )
+points = PoolVector2Array( 0, 0, 500, 0, 1000, 0, 1500, 0, 2000, 0 )
 width = 200.0
-width_curve = SubResource( 6 )
+width_curve = SubResource( 7 )
 default_color = Color( 1, 1, 1, 1 )
 texture = ExtResource( 6 )
 texture_mode = 2
@@ -169,41 +170,42 @@ antialiased = true
 [node name="Particles2D" type="Particles2D" parent="Navigator/Body"]
 self_modulate = Color( 0, 0, 0, 1 )
 show_behind_parent = true
-scale = Vector2( 1.58375, 1.58375 )
+scale = Vector2( 2.05863, 2.05863 )
 z_index = 1
 amount = 36
 lifetime = 1.5
 speed_scale = 4.1
 randomness = 1.0
-process_material = SubResource( 4 )
-texture = ExtResource( 2 )
-
-[node name="VisualHands" type="Node2D" parent="Navigator/Body"]
-visible = false
-scale = Vector2( 1.53973, 1.53973 )
-
-[node name="Leg1" type="Node2D" parent="Navigator/Body/VisualHands"]
-
-[node name="WHITE_Circle" type="Sprite" parent="Navigator/Body/VisualHands/Leg1"]
-scale = Vector2( 0.5, 0.5 )
+process_material = SubResource( 10 )
 texture = ExtResource( 2 )
 
 [node name="EyeManager" type="Node2D" parent="Navigator"]
 z_index = 1
 script = ExtResource( 5 )
-eyes_total = 1
-default_eye_spring_radius = 225
-global_springiness = 170
-max_distance_spring = 100
+eyes_total = 8
+body_radius = 200.0
+eye_springiness = 500.0
+orbit_gravity = 0.5
+max_distance_spring = 1000
+speed_damp = 10.0
+assumed_radius = 250.0
+rand_force = 20000.0
 
-[node name="Eye1" type="Sprite" parent="Navigator/EyeManager"]
-position = Vector2( 0, -1.19209e-07 )
-scale = Vector2( 0.855687, 0.850305 )
+[node name="Eye" type="Node2D" parent="Navigator/EyeManager"]
+
+[node name="White" type="Sprite" parent="Navigator/EyeManager/Eye"]
 texture = ExtResource( 2 )
 
-[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye1"]
+[node name="Iris" type="Sprite" parent="Navigator/EyeManager/Eye/White"]
 self_modulate = Color( 0, 0, 0, 1 )
 scale = Vector2( 0.348678, 0.348678 )
+z_index = 1
+texture = ExtResource( 2 )
+
+[node name="back" type="Sprite" parent="Navigator/EyeManager/Eye"]
+self_modulate = Color( 0, 0, 0, 1 )
+scale = Vector2( 1.71856, 1.71856 )
+z_index = -1
 texture = ExtResource( 2 )
 
 [node name="IdealTargets" type="Node2D" parent="Navigator"]

@@ -22,7 +22,7 @@ export var force_total = 100.0
 var legs
 var targets
 var ideal_targets
-var visual_hands
+#var visual_hands
 var visual_legs
 
 # voluntarily lift leg when further than this from target and it is permitted
@@ -86,14 +86,14 @@ func _physics_process(delta):
 	
 	var acceleration = (speed - old_speed)/max(delta, 0.001)
 	# move visual components of legs
-	animate_legs(delta)
+#	animate_legs(delta)
 	for i in range(legs_total):
 		for j in range(rope_timesteps):
-			simulate_rope(i, Vector2.ZERO, to_local(visual_hands[i].global_position), -acceleration + gravity * Vector2.DOWN, delta/rope_timesteps)
+			simulate_rope(i, Vector2.ZERO, to_local(legs[i].global_position), -acceleration + gravity * Vector2.DOWN, delta/rope_timesteps)
 		visual_legs[i].points = rope_nodes_positions[i]
 	
 	# look at target
-	$EyeManager.move_eyes(current_dir/dir_clamp)
+	$EyeManager.move_eyes(current_target)
 	
 	pass
 
@@ -107,7 +107,7 @@ func make_legs_and_targets():
 		$LegManager.add_child($LegManager.get_child(0).duplicate())
 		$RealTargets.add_child($RealTargets.get_child(0).duplicate())
 		$Body/VisualLegs.add_child($Body/VisualLegs.get_child(0).duplicate())
-		$Body/VisualHands.add_child($Body/VisualHands.get_child(0).duplicate())
+#		$Body/VisualHands.add_child($Body/VisualHands.get_child(0).duplicate())
 		pass
 	
 	# make ideal targets that will be used visible
@@ -127,7 +127,7 @@ func update_legs_and_targets():
 	targets = $RealTargets.get_children()
 	ideal_targets = $IdealTargets.get_children()
 	visual_legs = $Body/VisualLegs.get_children()
-	visual_hands = $Body/VisualHands.get_children()
+#	visual_hands = $Body/VisualHands.get_children()
 	pass
 
 func update_real_targets():
@@ -214,16 +214,16 @@ func plant_leg(leg : Node2D):
 	leg.scale = Vector2.ONE
 
 
-func animate_legs(delta : float):
-	
-	# hands are leg tips
-	for i in visual_hands.size():
-		# scaled to approach leg scale (appearance of liftin and placing)
-		visual_hands[i].scale = lerp(visual_hands[i].scale, legs[i].scale/2, delta * 20)
-		# they are moved to where the legs are
-		visual_hands[i].global_position = legs[i].global_position
-	
-	pass
+#func animate_legs(delta : float):
+#
+#	# hands are leg tips
+#	for i in visual_hands.size():
+#		# scaled to approach leg scale (appearance of liftin and placing)
+#		visual_hands[i].scale = lerp(visual_hands[i].scale, legs[i].scale/2, delta * 20)
+#		# they are moved to where the legs are
+#		visual_hands[i].global_position = legs[i].global_position
+#
+#	pass
 
 
 # rope physics calculated here
@@ -267,7 +267,6 @@ func simulate_rope(
 	
 	# apply acceleration to speeds
 	for i in range(new_speeds.size()):
-		var damping = 3
 		new_speeds[i] += acceleration * delta
 		new_speeds[i] += new_forces[i] * delta
 		new_speeds[i] *= 1 - delta * rope_damping
