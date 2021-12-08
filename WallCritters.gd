@@ -3,6 +3,9 @@ extends Node2D
 export (NodePath) var critter_path
 onready var critter = get_node(critter_path)
 
+func _ready():
+	$target/AnimationPlayer.play("breathe", -1, 2)
+
 func _physics_process(delta):
 	var critter_pos = critter.global_position
 	

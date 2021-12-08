@@ -14,12 +14,14 @@ var positions = []
 var speeds = []
 var forces = []
 var eyes = []
+var offsets = []
 
 func _ready():
 	for i in eyes_total:
 		positions.append(Vector2.ZERO)
 		speeds.append(Vector2.ZERO)
 		forces.append(Vector2.ZERO)
+		offsets.append(Vector2.ZERO)
 	
 	for i in eyes_total - 1:
 		add_child(get_child(0).duplicate())
@@ -27,14 +29,15 @@ func _ready():
 	eyes = get_children()
 	for i in range(positions.size()):
 		positions[i] = 150 * sqrt(randf()) * Vector2.RIGHT.rotated(randf() * TAU)
+		offsets[i] = Vector2.RIGHT.rotated(randf() * TAU) * randf() * 500
 		eyes[i].position = positions[i]
 		eyes[i].scale = Vector2.ONE * pow(rand_range(0.75, 1.0), 2) * 0.5
 	pass
 
 func move_eyes(world_pos):
-	for eye in eyes:
-		var direction = world_pos - eye.global_position
-		eye.get_child(0).get_child(0).position = clamp(direction.length(), 0.0, 1.0) * 60 * direction.normalized()
+	for i in range(eyes.size()):
+		var direction = world_pos - eyes[i].global_position + offsets[i]
+		eyes[i].get_child(0).get_child(0).position = clamp(direction.length(), 0.0, 1.0) * 60 * direction.normalized()
 	pass
 
 func _physics_process(delta):
@@ -66,11 +69,11 @@ func _physics_process(delta):
 		pass
 
 
-	for child in get_children():
-		var white = child.get_child(0)
+	for i in range(eyes.size()):
+		var white = eyes[i].get_child(0)
 		white.scale = lerp(white.scale, Vector2.ONE, delta*10)
 		if randf() < blink_chance * delta:
 			white.scale = Vector2(1,0)
-	
-	
+			offsets[i] = Vector2.RIGHT.rotated(randf() * TAU) * randf() * 1000
+			
 	pass

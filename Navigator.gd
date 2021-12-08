@@ -4,6 +4,8 @@ extends Node2D
 export (NodePath) var surface_path
 onready var surface = get_node(surface_path)
 
+export (NodePath) var target_path
+onready var target = get_node(target_path)
 # current_dir is the direction Navigator is moving in
 var current_dir = Vector2.ZERO
 var speed = Vector2.ZERO
@@ -52,19 +54,38 @@ export var rope_fraction_idle = 0.5
 export var rope_springiness = 10000.0
 export var rope_damping = 3.0
 export var rope_timesteps = 5
+
+
 func _ready():
+	toggle_debug_draw(false)
 	# spawn desired number of legs and do necessary setup
 	make_legs_and_targets()
 	# save references to nodes relevant to leg operation for easier access
 	update_legs_and_targets()
 	pass
 
+func toggle_debug_draw(state):
+	$IdealTargets.visible = state
+	for child in $RealTargets.get_children():
+		child.visible = state
+	for child in $LegManager.get_children():
+		child.visible = state
+	pass
+
+
 func _physics_process(delta):
+	
+	if Input.is_action_just_pressed("ui_accept"):
+		toggle_debug_draw(true)
+	if Input.is_action_just_released("ui_accept"):
+		toggle_debug_draw(false)
 	
 	var old_speed = speed
 	# find current target and clamp movement toward it 
 	# using mouse as target for debug purposes
-	var current_target = get_global_mouse_position()
+#	var current_target = get_global_mouse_position()
+	var current_target = target.global_position
+	target.distance_to_critter = (global_position - current_target).length()
 	current_dir = (current_target - global_position).clamped(dir_clamp)
 	
 	# node containing ideal positions for all legs is rotated to where they will be needed
